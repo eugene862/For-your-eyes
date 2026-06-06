@@ -14,7 +14,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": "/eyes.html",
+  "start_url": "/index.html",
   "background_color": "#0b0c10",
   "theme_color": "#0b0c10",
   "display": "standalone",
