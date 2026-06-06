@@ -26,41 +26,35 @@ document.addEventListener("DOMContentLoaded", () => {
     isMusicPlaying = !isMusicPlaying;
   });
 
-  // --- 2. Cross-Device Manly & Romantic Voice Engine ---
+  // --- 2. Hilarous Theatrical Voice Engine ---
   const voiceBtn = document.getElementById("voice-btn");
   const letterTarget = document.getElementById("readable-letter");
   let synth = window.speechSynthesis;
   let utterance = null;
   let isSpeechPlaying = false;
 
-  const getBestManlyVoice = () => {
+  const getFunnyAccentVoice = () => {
     const voices = synth.getVoices();
     
-    // Exact priority keywords for rich, deep male voices across platforms
-    const targetKeywords = [
-      "premium", "natural", "male", "google uk english m", 
-      "en-us-x-sfg#male", "siri male", "microsoft david", "wavenet"
-    ];
-
+    // We target strong accents (British, Scottish, or explicit older male systems) 
+    // because forcing them to drop in pitch sounds incredibly funny.
+    const targetKeywords = ["uk", "scotland", "english", "david", "male"];
+    
     let bestVoice = null;
     let highestScore = -1;
 
     voices.forEach(voice => {
-      // We only want English profiles
       if (voice.lang.startsWith("en")) {
         let score = 0;
         const voiceNameLower = voice.name.toLowerCase();
 
-        // Score based on romantic/masculine depth keywords
         targetKeywords.forEach((keyword, index) => {
           if (voiceNameLower.includes(keyword)) {
-            // Higher keywords in our array get a heavier match weight
             score += (targetKeywords.length - index);
           }
         });
 
-        // Filter out explicitly female identifiers to guarantee a manly profile
-        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira") || voiceNameLower.includes("siri female")) {
+        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira")) {
           score = -10;
         }
 
@@ -71,10 +65,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Elegant Global Fallback: If no heavy masculine match is found, 
-    // British or Australian system voices offer a highly premium cadence for prose.
     if (!bestVoice || highestScore <= 0) {
-      bestVoice = voices.find(v => v.lang === 'en-GB' || v.lang === 'en-AU' || v.lang.startsWith('en'));
+      bestVoice = voices.find(v => v.lang === 'en-GB' || v.lang.startsWith('en'));
     }
 
     return bestVoice;
@@ -90,20 +82,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
-    const fullText = paragraphs.map(p => p.innerText).join(". ");
+    let fullText = paragraphs.map(p => p.innerText).join(". ");
+
+    // --- TEXT MUTATION: Phonetic Dialogue Rewriter ---
+    fullText = fullText
+      .replace(/Your eyes/gi, "Vun! Two! Three! Your magnificent eyes")
+      .replace(/are my/gi, "are my absolute")
+      .replace(/I can't/gi, "I simply cannot! Mwahahaha!")
+      .replace(/beautiful/gi, "most splendid, ultra-glorious")
+      .replace(/dark, deep gaze/gi, "mysterious, incredibly spooky, deep gaze")
+      .replace(/Every time/gi, "Every single time, I say!")
+      .replace(/captured my heart/gi, "bitten my neck... I mean, completely captured my heart!");
 
     utterance = new SpeechSynthesisUtterance(fullText);
     
-    // --- ROMANTIC CADENCE CONFIGURATION ---
-    // Forces the device's vocal tract to slow down and compress into a deeper resonance bar
-    utterance.rate = 0.76;  // Intentional, calm, and steady reading rhythm
-    utterance.pitch = 0.85; // Drops the frequency register down for a warmer, deeper chest-vibe tone
+    // --- THEATRICAL CRANK MODIFIERS ---
+    utterance.rate = 0.82;  // Slow, calculated dramatic pauses
+    utterance.pitch = 0.55; // Drops the pitch down into a ridiculous, booming supervillain bass register
 
-    // Fetch and bind the customized voice profile
-    const selectedVoice = getBestManlyVoice();
+    const selectedVoice = getFunnyAccentVoice();
     if (selectedVoice) {
       utterance.voice = selectedVoice;
-      console.log(`Successfully running romance profile: ${selectedVoice.name}`);
     }
 
     utterance.onend = () => {
@@ -124,9 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     isSpeechPlaying = true;
   });
 
-  // Critical for Chrome & Android: Voices load asynchronously, so we must trigger the fetcher
- // --- 2.5 Voice List Pre-Loader Fix ---
-  // Forces Chrome & Android to cache and prime the voice array immediately on load
+  // --- 2.5 Voice List Pre-Loader Fix ---
   const primeVoices = () => {
     if (typeof synth !== 'undefined' && synth.getVoices) {
       synth.getVoices();
@@ -143,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ctx = canvas.getContext("2d");
 
   let maxPetals = 25; 
-  if (window.innerWidth < 600) maxPetals = 12; // Fewer elements on small devices to prevent performance lag
+  if (window.innerWidth < 600) maxPetals = 12;
 
   const petalsArray = [];
 
@@ -171,7 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
       this.x += this.speedX;
       this.rotation += this.rotationSpeed;
 
-      // Reset values once it drifts off-screen
       if (this.y > canvas.height) {
         this.y = -10;
         this.x = Math.random() * canvas.width;
@@ -184,8 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.translate(this.x, this.y);
       ctx.rotate((this.rotation * Math.PI) / 180);
       ctx.beginPath();
-      
-      // Paint soft, abstract, glowing pink rose shapes
       ctx.ellipse(0, 0, this.size, this.size / 1.5, 0, 0, 2 * Math.PI);
       ctx.fillStyle = `rgba(240, 128, 128, ${this.opacity})`;
       ctx.fill();
