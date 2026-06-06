@@ -3,9 +3,10 @@ const ASSETS = [
   'index.html',
   'eyes.css',
   'eyes.js',
-  'manifest.json'
+  'manifest.json',
+  'icon-192.png',
+  'icon-512.png'
 ];
-
 // Install Service Worker and cache resources
 self.addEventListener('install', (e) => {
   e.waitUntil(
