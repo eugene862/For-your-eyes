@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For You</title>
+    <!-- Mobile PWA Meta Tags -->
+    <meta name="theme-color" content="#0b0c10" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Montserrat:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="eyes.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <!-- Voice Control Floating Button -->
+    <button id="voice-btn" class="voice-fab" aria-label="Listen to letter">
+      <span class="icon">🔊</span>
+    </button>
+
+    <div class="letter-wrapper">
+      <div class="image-container reveal">
+        <img
+          src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80"
+          alt="Warm glow"
+          class="letter-image"
+        />
+      </div>
+
+      <!-- Wrapping text in an ID so the JS speech synthesizer can read it seamlessly -->
+      <div id="readable-letter">
+        <header class="letter-header reveal">
+          <h1>My Dearest,</h1>
+        </header>
+
+        <main class="letter-body">
+          <p class="reveal">
+            Your eyes are my favorite place to get lost. They say the windows to
+            the soul are standard issue, but looking into your dark, deep gaze
+            feels like exploring an entire night sky I’m still learning to read.
+            I've tried looking away. I can't.
+          </p>
+
+          <p class="reveal">
+            There is a quiet brilliance and a magic in them that I cannot fully
+            explain. They hold the softness of moonlight and the warmth of the
+            morning sun, all at once. I find myself catching my breath whenever
+            you look my way—there is a warmth in your gaze that instantly
+            grounds me, no matter how chaotic the rest of the world gets.
+          </p>
+
+          <p class="reveal">
+            Your eyes speak a language that no words can match. They have this
+            incredible ability to hold my attention without saying a single
+            word, speaking a language of comfort, depth, and a subtle, beautiful
+            spark that belongs entirely to you. They tell me stories when you
+            are silent, comfort me when I am troubled, and make me smile without
+            a single sentence being spoken.
+          </p>
+
+          <div class="spacer reveal">✦ ✦ ✦</div>
+
+          <p class="reveal">
+            Every time I look closely, I discover something entirely unique,
+            like that beautiful brown fleck on your right eye that always
+            catches my attention. It's a tiny spark of character against the
+            striking black and dark brown surrounding your pupil—a detail that
+            belongs entirely to you. It makes my heart feel completely at home.
+          </p>
+
+          <p class="reveal">
+            It’s not just the depth of that color or the way the light catches
+            them, though both are stunning. It is the life behind them.
+            Sometimes they shine with laughter, turning ordinary moments into
+            memories I never want to forget. Other times they become gentle and
+            thoughtful, revealing a depth that draws me closer to you. It’s how
+            they soften when you are happy, how they alight with brilliant
+            energy when you talk about something you love, and how safe they
+            make me feel whenever they meet mine. No matter what emotion they
+            hold, they always leave me captivated.
+          </p>
+
+          <p class="reveal">
+            If love could take a physical form, I believe it would look a lot
+            like your eyes—bright enough to guide me, gentle enough to calm me,
+            and beautiful enough to make me pause every time I see them. If
+            looking at you this way is a habit, it’s one I never intend to
+            break. Every time I look into your eyes, I don’t just see someone
+            beautiful, I see my favorite view, and exactly where I want to be.
+          </p>
+
+          <p class="reveal">
+            I could spend a thousand lifetimes searching the world for something
+            more beautiful, and I would still return to your gaze. Because in
+            your eyes, I don't just see beauty, I see the person who has
+            captured my heart completely.
+          </p>
+
+          <p class="reveal">
+            So keep looking at me like that. Like I'm the only story worth
+            reading. Like the past and future don't matter because right now, I
+            exist only in your gaze.
+          </p>
+        </main>
+
+        <footer class="letter-footer reveal">
+          <p class="closing">Forever yours,</p>
+          <p class="signature">With all my love ❤️</p>
+        </footer>
+      </div>
+    </div>
+
+    <script src="eyes.js"></script>
+  </body>
+</html>

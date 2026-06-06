@@ -1,0 +1,145 @@
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0b0c10; /* Deep midnight background */
+  color: #e5e5e5; /* Soft off-white text for reading comfort */
+  font-family: 'Lora', Georgia, serif;
+  font-size: 1.15rem;
+  line-height: 1.8;
+  padding: 4rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.letter-wrapper {
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Image Presentation */
+.image-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+}
+
+.letter-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0.85;
+  filter: sepia(20%); /* Gives an ultra-warm, nostalgic feel */
+}
+
+/* Typography Layout */
+.letter-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 2rem;
+  letter-spacing: 2px;
+  color: #c5a880; /* Subtle champagne/gold accent color */
+  margin-bottom: 2rem;
+}
+
+.letter-body p {
+  margin-bottom: 2rem;
+  text-align: left;
+  font-weight: 400;
+}
+
+.spacer {
+  text-align: center;
+  color: #c5a880;
+  letter-spacing: 0.5rem;
+  margin: 3rem 0;
+  font-size: 0.9rem;
+}
+
+.letter-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid #1f2833;
+}
+
+.letter-footer .closing {
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.letter-footer .signature {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #c5a880;
+}
+
+/* Scroll Animation classes */
+.reveal {
+  opacity: 0;
+  transform: translateY(25px);
+  transition: opacity 1.2s ease, transform 1.2s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive adjustment */
+@media (max-width: 480px) {
+  body {
+    padding: 2rem 1.2rem;
+    font-size: 1.05rem;
+  }
+  .letter-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Floating Voice Button */
+.voice-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background-color: #c5a880; /* Match text gold accent */
+  color: #0b0c10;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+.voice-fab:active {
+  transform: scale(0.9);
+}
+
+.voice-fab.playing {
+  background-color: #e5e5e5;
+}
+
+/* Optimize scroll padding for mobile screens */
+@media (max-width: 768px) {
+  .voice-fab {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+}

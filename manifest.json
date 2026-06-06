@@ -1,0 +1,22 @@
+{
+  "short_name": "For You",
+  "name": "My Favorite View",
+  "description": "A letter dedicated to the eyes that captured my heart.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/eyes.html",
+  "background_color": "#0b0c10",
+  "theme_color": "#0b0c10",
+  "display": "standalone",
+  "orientation": "portrait"
+}
