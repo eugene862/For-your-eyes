@@ -26,24 +26,31 @@ document.addEventListener("DOMContentLoaded", () => {
     isMusicPlaying = !isMusicPlaying;
   });
 
-  // --- 2. Hilarous Theatrical Voice Engine ---
+  // --- 2. Hilarious Theatrical Voice Engine ---
   const voiceBtn = document.getElementById("voice-btn");
   const letterTarget = document.getElementById("readable-letter");
   let synth = window.speechSynthesis;
   let utterance = null;
   let isSpeechPlaying = false;
 
+  // Global voice tracker array to stay loaded
+  let activeVoices = [];
+  const loadVoices = () => {
+    if (typeof synth !== 'undefined' && synth.getVoices) {
+      activeVoices = synth.getVoices();
+    }
+  };
+
   const getFunnyAccentVoice = () => {
-    const voices = synth.getVoices();
+    // Refresh voice registry dynamically on execution
+    loadVoices();
     
-    // We target strong accents (British, Scottish, or explicit older male systems) 
-    // because forcing them to drop in pitch sounds incredibly funny.
+    // Target keywords to locate deep or highly stylized male accents
     const targetKeywords = ["uk", "scotland", "english", "david", "male"];
-    
     let bestVoice = null;
     let highestScore = -1;
 
-    voices.forEach(voice => {
+    activeVoices.forEach(voice => {
       if (voice.lang.startsWith("en")) {
         let score = 0;
         const voiceNameLower = voice.name.toLowerCase();
@@ -54,7 +61,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
 
-        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira")) {
+        // Filter out feminine profiles for the comedy bass vibe
+        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira") || voiceNameLower.includes("siri female")) {
           score = -10;
         }
 
@@ -65,14 +73,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Fallback directly to British or generic systems if mapping slips
     if (!bestVoice || highestScore <= 0) {
-      bestVoice = voices.find(v => v.lang === 'en-GB' || v.lang.startsWith('en'));
+      bestVoice = activeVoices.find(v => v.lang === 'en-GB' || v.lang.startsWith('en'));
     }
 
     return bestVoice;
   };
 
-voiceBtn.addEventListener("click", () => {
+  voiceBtn.addEventListener("click", () => {
     if (isSpeechPlaying) {
       synth.cancel();
       voiceBtn.innerText = "🔊";
@@ -84,22 +93,22 @@ voiceBtn.addEventListener("click", () => {
     const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
     let fullText = paragraphs.map(p => p.innerText).join(". ");
 
-    // --- PHONETIC ACCENT REWRITER ---
-    // This forces ANY mobile device voice engine to sound completely funny
-    // by changing the actual text phonetics right before it reads it out loud!
+    // --- THE ROYAL BUTLER COMEDY REWRITER ---
+    // Forces ANY stubborn desktop or mobile device voice engine to sound funny 
+    // by swapping the text vocabulary before the engine processes it!
     fullText = fullText
-      .replace(/My Dearest/gi, "Greetings, humahn creature! My Dearest,")
-      .replace(/Your eyes/gi, "Ah, yes! Vun! Two! Three! Your absolute eyes")
-      .replace(/are my favorite place/gi, "are my mahg-nificent, most spooky favorite location")
-      .replace(/I can't/gi, "I simply cannot pull away! Ah, ha, ha!")
-      .replace(/beautiful/gi, "splendidly red, glorious")
-      .replace(/captured my heart/gi, "bitten my neck... electrocuted my circuits... and captured my heart!");
+      .replace(/My Dearest/gi, "Halt! Hear ye, hear ye! Most esteemed, regal, and precious human companion,")
+      .replace(/Your eyes/gi, "Behold! Your optical globes... yes, those magnificent eyeballs")
+      .replace(/are my favorite place/gi, "are my absolute favorite coordinates in the entire universe to get utterly lost in")
+      .replace(/I can't/gi, "I simply cannot pull my gaze away! Good heavens, it is completely impossible!")
+      .replace(/beautiful/gi, "tremendously dazzling, top-tier, ultra-shiny")
+      .replace(/captured my heart/gi, "completely hijacked my central processing unit... and captured my heart!");
 
     utterance = new SpeechSynthesisUtterance(fullText);
     
-    // Attempt standard device scale reduction shifts
+    // Aggressive modifier shifts to drag pitch down on systems that support it
     utterance.rate = 0.80;  
-    utterance.pitch = 0.50; 
+    utterance.pitch = 0.45; 
 
     const selectedVoice = getFunnyAccentVoice();
     if (selectedVoice) {
@@ -123,11 +132,11 @@ voiceBtn.addEventListener("click", () => {
     voiceBtn.classList.add("playing");
     isSpeechPlaying = true;
   });
+
   // --- 2.5 Voice List Pre-Loader Fix ---
+  // Forces engines to populate internal arrays immediately on browser instantiation
   const primeVoices = () => {
-    if (typeof synth !== 'undefined' && synth.getVoices) {
-      synth.getVoices();
-    }
+    loadVoices();
   };
   
   primeVoices();
