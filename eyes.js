@@ -125,10 +125,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Critical for Chrome & Android: Voices load asynchronously, so we must trigger the fetcher
-  if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = () => {
+ // --- 2.5 Voice List Pre-Loader Fix ---
+  // Forces Chrome & Android to cache and prime the voice array immediately on load
+  const primeVoices = () => {
+    if (typeof synth !== 'undefined' && synth.getVoices) {
       synth.getVoices();
-    };
+    }
+  };
+  
+  primeVoices();
+  if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = primeVoices;
   }
 
   // --- 3. Falling Rose Petals Canvas Effect ---
