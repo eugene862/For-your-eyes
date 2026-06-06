@@ -1,10 +1,3 @@
-Here is the fully unified, production-ready `eyes.js` file. It merges the clean stability fixes (like the background music element null-check protection) with the aggressive, multi-layered voice-matching engine.
-
-This engine is specifically prioritized to look for premium desktop and mobile profiles—ensuring you get that exact deep, theatrical comic delivery you want without the browser dropping back to a generic flat voice.
-
-### Your Updated `eyes.js` File:
-
-```javascript
 // Register Service Worker for PWA compliance
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
