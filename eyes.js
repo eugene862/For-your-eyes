@@ -26,68 +26,34 @@ document.addEventListener("DOMContentLoaded", () => {
     isMusicPlaying = !isMusicPlaying;
   });
 
-  // --- 2. High-Fidelity Romantic Voice Engine ---
-  const voiceBtn = document.getElementById("voice-btn");
-  const letterTarget = document.getElementById("readable-letter");
-  let synth = window.speechSynthesis;
-  let utterance = null;
-  let isSpeechPlaying = false;
+  utterance = new SpeechSynthesisUtterance(fullText);
+    
+    // --- SOOTHING & INTENSE ROMANTIC PACE ---
+    utterance.rate = 0.78;  // Slightly slower (0.78) for a calm, deeply reassuring, and steady reading rhythm
+    utterance.pitch = 0.88; // Lowered pitch to make the voice sound deeper, warmer, and more comforting
 
-  voiceBtn.addEventListener("click", () => {
-    if (isSpeechPlaying) {
-      synth.cancel();
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
-      return;
-    }
-
-    const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
-    const fullText = paragraphs.map(p => p.innerText).join(". ");
-
-    utterance = new SpeechSynthesisUtterance(fullText);
-    utterance.rate = 0.82;  
-    utterance.pitch = 0.95; 
-
+    // --- MALE ACCENT & QUALITY FILTER ---
     const voices = synth.getVoices();
-    const romanticVoice = voices.find(voice => 
-      (voice.lang.startsWith('en') && (
-        voice.name.includes("Natural") || 
-        voice.name.includes("Premium") || 
-        voice.name.includes("Google") || 
-        voice.name.includes("Siri")
-      ))
+    
+    // First priority: Look for premium, natural-sounding MALE English voices
+    const soothingMaleVoice = voices.find(voice => 
+      voice.lang.startsWith('en') && (
+        voice.name.toLowerCase().includes("male") || 
+        voice.name.includes("Google UK English M") || 
+        voice.name.includes("en-us-x-sfg#male") || 
+        voice.name.includes("Siri Male") ||
+        voice.name.includes("wavenet")
+      )
     );
     
-    const accentFallback = voices.find(voice => voice.lang === 'en-GB' || voice.lang === 'en-AU');
+    // Elegant fallback: If a specific male tag isn't exposed, grab a British or Australian profile which reads beautifully
+    const elegantFallback = voices.find(voice => voice.lang === 'en-GB' || voice.lang === 'en-AU');
 
-    if (romanticVoice) {
-      utterance.voice = romanticVoice;
-    } else if (accentFallback) {
-      utterance.voice = accentFallback;
+    if (soothingMaleVoice) {
+      utterance.voice = soothingMaleVoice;
+    } else if (elegantFallback) {
+      utterance.voice = elegantFallback;
     }
-
-    utterance.onend = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
-    };
-
-    utterance.onerror = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
-    };
-
-    synth.speak(utterance);
-    voiceBtn.innerText = "⏸️";
-    voiceBtn.classList.add("playing");
-    isSpeechPlaying = true;
-  });
-
-  if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = synth.getVoices;
-  }
 
   // --- 3. Falling Rose Petals Canvas Effect ---
   const canvas = document.getElementById("petal-canvas");
