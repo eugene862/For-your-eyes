@@ -82,15 +82,11 @@ body {
 }
 
 /* Scroll Animation classes */
-.reveal {
-  opacity: 0;
-  transform: translateY(25px);
-  transition: opacity 1.2s ease, transform 1.2s ease;
-}
-
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0);
+/* Force everything to display instantly */
+.reveal, p, main, header, footer, .letter-wrapper {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
 }
 
 /* Responsive adjustment */
