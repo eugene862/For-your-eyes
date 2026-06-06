@@ -1,11 +1,9 @@
 const CACHE_NAME = 'love-letter-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/eyes.css',
-  '/eyes.js',
-  '/manifest.json'
- 
+  'index.html',
+  'eyes.css',
+  'eyes.js',
+  'manifest.json'
 ];
 
 // Install Service Worker and cache resources
