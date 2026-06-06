@@ -23,60 +23,31 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(revealOnScroll, 150);
   window.addEventListener("scroll", revealOnScroll);
 
-  // --- 2. Text-to-Speech Implementation ---
-  const voiceBtn = document.getElementById("voice-btn");
-  const letterTarget = document.getElementById("readable-letter");
-  let synth = window.speechSynthesis;
-  let utterance = null;
-  let isPlaying = false;
-
-  voiceBtn.addEventListener("click", () => {
-    // If speaking, clicking again will pause/stop
-    if (isPlaying) {
-      synth.cancel();
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isPlaying = false;
-      return;
-    }
-
-    // Grab all readable text inside the container, filtering out spacers
-    const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
-    const fullText = paragraphs.map(p => p.innerText).join(". ");
-
-    utterance = new SpeechSynthesisUtterance(fullText);
+  utterance = new SpeechSynthesisUtterance(fullText);
     
-    // Configurations for a smooth, warm tone
-    utterance.rate = 0.90;  // Slightly slower pace for emotional delivery
-    utterance.pitch = 1.0; // Normal pitch range
+    // --- ROMANTIC PACE CONFIGURATION ---
+    utterance.rate = 0.80;  // Dropped to 0.80 so it reads slow, intimate, and breathless
+    utterance.pitch = 0.92; // Slightly lowered pitch to make the voice sound warmer and deeper
 
-    // Select a pleasant natural voice if available (defaults to system fallback)
+    // --- ACCENT & QUALITY FILTER ---
     const voices = synth.getVoices();
-    const premiumVoice = voices.find(voice => voice.name.includes("Google") || voice.name.includes("Natural"));
-    if (premiumVoice) utterance.voice = premiumVoice;
+    
+    // This searches for the highest quality voices available on iOS or Android
+    const romanticVoice = voices.find(voice => 
+      // Looks for high-quality English voices first
+      (voice.lang.startsWith('en') && (
+        voice.name.includes("Natural") || 
+        voice.name.includes("Premium") || 
+        voice.name.includes("Google") || 
+        voice.name.includes("Siri")
+      ))
+    );
+    
+    // Fallback: If it finds a British or Australian accent, those often sound incredibly elegant and romantic for prose
+    const accentFallback = voices.find(voice => voice.lang === 'en-GB' || voice.lang === 'en-AU');
 
-    // Handle speech states
-    utterance.onend = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isPlaying = false;
-    };
-
-    utterance.onerror = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isPlaying = false;
-    };
-
-    // Begin Playback
-    synth.speak(utterance);
-    voiceBtn.innerText = "⏸️";
-    voiceBtn.classList.add("playing");
-    isPlaying = true;
-  });
-
-  // Required fix for some mobile browsers that load voices asynchronously
-  if (speechSynthesis.onvoiceschanged !== undefined) {
-    speechSynthesis.onvoiceschanged = synth.getVoices;
-  }
-});
+    if (romanticVoice) {
+      utterance.voice = romanticVoice;
+    } else if (accentFallback) {
+      utterance.voice = accentFallback;
+    }
