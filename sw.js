@@ -4,9 +4,8 @@ const ASSETS = [
   '/index.html',
   '/eyes.css',
   '/eyes.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  '/manifest.json'
+ 
 ];
 
 // Install Service Worker and cache resources
