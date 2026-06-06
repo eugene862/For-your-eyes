@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return bestVoice;
   };
 
-  voiceBtn.addEventListener("click", () => {
+voiceBtn.addEventListener("click", () => {
     if (isSpeechPlaying) {
       synth.cancel();
       voiceBtn.innerText = "🔊";
@@ -84,21 +84,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
     let fullText = paragraphs.map(p => p.innerText).join(". ");
 
-    // --- TEXT MUTATION: Phonetic Dialogue Rewriter ---
+    // --- PHONETIC ACCENT REWRITER ---
+    // This forces ANY mobile device voice engine to sound completely funny
+    // by changing the actual text phonetics right before it reads it out loud!
     fullText = fullText
-      .replace(/Your eyes/gi, "Vun! Two! Three! Your magnificent eyes")
-      .replace(/are my/gi, "are my absolute")
-      .replace(/I can't/gi, "I simply cannot! Mwahahaha!")
-      .replace(/beautiful/gi, "most splendid, ultra-glorious")
-      .replace(/dark, deep gaze/gi, "mysterious, incredibly spooky, deep gaze")
-      .replace(/Every time/gi, "Every single time, I say!")
-      .replace(/captured my heart/gi, "bitten my neck... I mean, completely captured my heart!");
+      .replace(/My Dearest/gi, "Greetings, humahn creature! My Dearest,")
+      .replace(/Your eyes/gi, "Ah, yes! Vun! Two! Three! Your absolute eyes")
+      .replace(/are my favorite place/gi, "are my mahg-nificent, most spooky favorite location")
+      .replace(/I can't/gi, "I simply cannot pull away! Ah, ha, ha!")
+      .replace(/beautiful/gi, "splendidly red, glorious")
+      .replace(/captured my heart/gi, "bitten my neck... electrocuted my circuits... and captured my heart!");
 
     utterance = new SpeechSynthesisUtterance(fullText);
     
-    // --- THEATRICAL CRANK MODIFIERS ---
-    utterance.rate = 0.82;  // Slow, calculated dramatic pauses
-    utterance.pitch = 0.55; // Drops the pitch down into a ridiculous, booming supervillain bass register
+    // Attempt standard device scale reduction shifts
+    utterance.rate = 0.80;  
+    utterance.pitch = 0.50; 
 
     const selectedVoice = getFunnyAccentVoice();
     if (selectedVoice) {
@@ -122,7 +123,6 @@ document.addEventListener("DOMContentLoaded", () => {
     voiceBtn.classList.add("playing");
     isSpeechPlaying = true;
   });
-
   // --- 2.5 Voice List Pre-Loader Fix ---
   const primeVoices = () => {
     if (typeof synth !== 'undefined' && synth.getVoices) {
