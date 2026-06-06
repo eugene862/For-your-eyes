@@ -2,8 +2,8 @@ const CACHE_NAME = 'love-letter-v1';
 const ASSETS = [
   '/',
   '/index.html',
-  '/style.css',
-  '/script.js',
+  '/eyes.css',
+  '/eyes.js',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png'
