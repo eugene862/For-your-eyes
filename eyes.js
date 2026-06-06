@@ -26,119 +26,108 @@ document.addEventListener("DOMContentLoaded", () => {
     isMusicPlaying = !isMusicPlaying;
   });
 
-  // --- 2. Hilarious Theatrical Voice Engine ---
+  // --- 2. Dynamic Mid-Stream Accent Switching Engine ---
   const voiceBtn = document.getElementById("voice-btn");
   const letterTarget = document.getElementById("readable-letter");
   let synth = window.speechSynthesis;
-  let utterance = null;
   let isSpeechPlaying = false;
+  let speechQueue = [];
 
-  // Global voice tracker array to stay loaded
-  let activeVoices = [];
+  let systemVoices = [];
   const loadVoices = () => {
     if (typeof synth !== 'undefined' && synth.getVoices) {
-      activeVoices = synth.getVoices();
+      systemVoices = synth.getVoices();
     }
   };
 
-  const getFunnyAccentVoice = () => {
-    // Refresh voice registry dynamically on execution
-    loadVoices();
-    
-    // Target keywords to locate deep or highly stylized male accents
-    const targetKeywords = ["uk", "scotland", "english", "david", "male"];
-    let bestVoice = null;
-    let highestScore = -1;
+  // Dedicated Voice Matchers
+  const getIndianVoice = () => {
+    return systemVoices.find(v => v.lang.startsWith("en-IN") || v.name.toLowerCase().includes("india")) || 
+           systemVoices.find(v => v.lang.startsWith("en"));
+  };
 
-    activeVoices.forEach(voice => {
-      if (voice.lang.startsWith("en")) {
-        let score = 0;
-        const voiceNameLower = voice.name.toLowerCase();
+  const getScottishOrBritishVoice = () => {
+    return systemVoices.find(v => v.name.toLowerCase().includes("scotland") || v.lang === "en-GB" || v.name.toLowerCase().includes("david")) || 
+           systemVoices.find(v => v.lang.startsWith("en"));
+  };
 
-        targetKeywords.forEach((keyword, index) => {
-          if (voiceNameLower.includes(keyword)) {
-            score += (targetKeywords.length - index);
-          }
-        });
-
-        // Filter out feminine profiles for the comedy bass vibe
-        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira") || voiceNameLower.includes("siri female")) {
-          score = -10;
-        }
-
-        if (score > highestScore) {
-          highestScore = score;
-          bestVoice = voice;
-        }
-      }
-    });
-
-    // Fallback directly to British or generic systems if mapping slips
-    if (!bestVoice || highestScore <= 0) {
-      bestVoice = activeVoices.find(v => v.lang === 'en-GB' || v.lang.startsWith('en'));
-    }
-
-    return bestVoice;
+  const stopAllSpeech = () => {
+    synth.cancel();
+    voiceBtn.innerText = "🔊";
+    voiceBtn.classList.remove("playing");
+    isSpeechPlaying = false;
+    speechQueue = [];
   };
 
   voiceBtn.addEventListener("click", () => {
     if (isSpeechPlaying) {
-      synth.cancel();
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
+      stopAllSpeech();
       return;
     }
 
+    loadVoices(); 
     const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
-    let fullText = paragraphs.map(p => p.innerText).join(". ");
+    speechQueue = [];
 
-    // --- THE ROYAL BUTLER COMEDY REWRITER ---
-    // Forces ANY stubborn desktop or mobile device voice engine to sound funny 
-    // by swapping the text vocabulary before the engine processes it!
-    fullText = fullText
-      .replace(/My Dearest/gi, "Halt! Hear ye, hear ye! Most esteemed, regal, and precious human companion,")
-      .replace(/Your eyes/gi, "Behold! Your optical globes... yes, those magnificent eyeballs")
-      .replace(/are my favorite place/gi, "are my absolute favorite coordinates in the entire universe to get utterly lost in")
-      .replace(/I can't/gi, "I simply cannot pull my gaze away! Good heavens, it is completely impossible!")
-      .replace(/beautiful/gi, "tremendously dazzling, top-tier, ultra-shiny")
-      .replace(/captured my heart/gi, "completely hijacked my central processing unit... and captured my heart!");
+    paragraphs.forEach((p, index) => {
+      let text = p.innerText;
 
-    utterance = new SpeechSynthesisUtterance(fullText);
-    
-    // Aggressive modifier shifts to drag pitch down on systems that support it
-    utterance.rate = 0.80;  
-    utterance.pitch = 0.45; 
+      // --- THE UNIFIED COMEDY REWRITER ---
+      // This applies the silly vocabulary alterations across BOTH engine shifts
+      if (index % 2 === 0) {
+        // Indian Voice Layer (Even paragraphs) - Highly formal & technical comedy
+        text = text
+          .replace(/My Dearest/gi, "Halt! Hello, hello! Hear ye, hear ye! Most esteemed, regal, and precious human companion,")
+          .replace(/Your eyes/gi, "Listen to me, your beautiful optical globes... yes, those magnificent eyeballs")
+          .replace(/are my favorite place/gi, "are my number-one absolute favorite coordinates in the entire universe to get utterly lost in, indexing at maximum priority,")
+          .replace(/I can't/gi, "I am trying to look away, but I simply cannot, hundred percent! Good heavens, it is completely impossible!")
+          .replace(/beautiful/gi, "tremendously dazzling, top-tier, ultra-shiny")
+          .replace(/captured my heart/gi, "completely hijacked my central processing unit... and captured my heart, items successfully saved!");
+      } else {
+        // Scottish Voice Layer (Odd paragraphs) - Deep, dramatic, structural comedy
+        text = text
+          .replace(/My Dearest/gi, "Och! Right then, hear ye, hear ye! Me absolute grand companion,")
+          .replace(/Your eyes/gi, "Behold! Yer magnificent optical globes... yes, those bonnie eyeballs")
+          .replace(/are my favorite place/gi, "are me absolute favorite place in the whole wide world to get utterly lost in")
+          .replace(/I can't/gi, "I've tried lookin' away but I cannot, lassy, no I cannae! It is completely impossible!")
+          .replace(/beautiful/gi, "right grand, top-tier, ultra-shiny")
+          .replace(/captured my heart/gi, "stolen me wee heart right out o' me chest... and captured my heart completely!");
+      }
 
-    const selectedVoice = getFunnyAccentVoice();
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    }
+      let utterance = new SpeechSynthesisUtterance(text);
+      
+      // Assign physical hardware accents and fine-tune pacing for maximum comedic impact
+      if (index % 2 === 0) {
+        utterance.voice = getIndianVoice();
+        utterance.rate = 0.85; 
+        utterance.pitch = 1.05; // Slightly bouncier tone
+      } else {
+        utterance.voice = getScottishOrBritishVoice();
+        utterance.rate = 0.78; 
+        utterance.pitch = 0.45; // Deep, rolling theatrical bass register
+      }
 
-    utterance.onend = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
-    };
+      // Cleanup UI execution at the end of the line array
+      if (index === paragraphs.length - 1) {
+        utterance.onend = () => stopAllSpeech();
+      }
+      utterance.onerror = () => stopAllSpeech();
 
-    utterance.onerror = () => {
-      voiceBtn.innerText = "🔊";
-      voiceBtn.classList.remove("playing");
-      isSpeechPlaying = false;
-    };
+      speechQueue.push(utterance);
+    });
 
-    synth.speak(utterance);
+    isSpeechPlaying = true;
     voiceBtn.innerText = "⏸️";
     voiceBtn.classList.add("playing");
-    isSpeechPlaying = true;
+    
+    // Inject all formatted lines sequentially into browser audio stream
+    speechQueue.forEach(line => {
+      synth.speak(line);
+    });
   });
 
   // --- 2.5 Voice List Pre-Loader Fix ---
-  // Forces engines to populate internal arrays immediately on browser instantiation
-  const primeVoices = () => {
-    loadVoices();
-  };
-  
+  const primeVoices = () => { loadVoices(); };
   primeVoices();
   if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = primeVoices;
