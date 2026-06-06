@@ -1,3 +1,10 @@
+Here is the fully unified, production-ready `eyes.js` file. It merges the clean stability fixes (like the background music element null-check protection) with the aggressive, multi-layered voice-matching engine.
+
+This engine is specifically prioritized to look for premium desktop and mobile profiles—ensuring you get that exact deep, theatrical comic delivery you want without the browser dropping back to a generic flat voice.
+
+### Your Updated `eyes.js` File:
+
+```javascript
 // Register Service Worker for PWA compliance
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -14,6 +21,12 @@ document.addEventListener("DOMContentLoaded", () => {
   let isMusicPlaying = false;
 
   musicBtn.addEventListener("click", () => {
+    // Structural Guard: Prevents script crashes if the audio tag isn't rendered yet
+    if (!bgMusic) {
+      console.warn("Background audio element (#bg-music) not found in the DOM.");
+      return;
+    }
+
     if (isMusicPlaying) {
       bgMusic.pause();
       musicBtn.innerHTML = '<span class="icon">🎵</span>';
@@ -45,25 +58,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // Refresh voice registry dynamically on execution
     loadVoices();
     
-    // Target keywords to locate deep or highly stylized male accents
-    const targetKeywords = ["uk", "scotland", "english", "david", "male"];
+    // PRIORITY 1: Precise string matches for elite theatrical profiles
+    const premiumTargets = ["microsoft david", "google uk english male", "united kingdom", "scotland"];
+    
+    // PRIORITY 2: Secondary keyword mapping fallback arrays
+    const fallbackKeywords = ["uk", "scotland", "english", "david", "male"];
+    
     let bestVoice = null;
     let highestScore = -1;
 
+    // First Pass: Lock down a deep premium voice directly if available on the system hardware
+    for (let voice of activeVoices) {
+      const nameLower = voice.name.toLowerCase();
+      if (premiumTargets.some(target => nameLower.includes(target))) {
+        return voice; 
+      }
+    }
+
+    // Second Pass: Fallback scoring metric if explicit premium profiles aren't installed
     activeVoices.forEach(voice => {
       if (voice.lang.startsWith("en")) {
         let score = 0;
         const voiceNameLower = voice.name.toLowerCase();
 
-        targetKeywords.forEach((keyword, index) => {
+        fallbackKeywords.forEach((keyword, index) => {
           if (voiceNameLower.includes(keyword)) {
-            score += (targetKeywords.length - index);
+            score += (fallbackKeywords.length - index);
           }
         });
 
-        // Filter out feminine profiles for the comedy bass vibe
+        // Aggressive filter to prevent high-pitched or feminine profiles from hijacking the role
         if (voiceNameLower.includes("female") || voiceNameLower.includes("zira") || voiceNameLower.includes("siri female")) {
-          score = -10;
+          score = -20;
         }
 
         if (score > highestScore) {
@@ -73,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Fallback directly to British or generic systems if mapping slips
+    // Safety net fallback to basic British English or default English profiles
     if (!bestVoice || highestScore <= 0) {
       bestVoice = activeVoices.find(v => v.lang === 'en-GB' || v.lang.startsWith('en'));
     }
@@ -94,8 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let fullText = paragraphs.map(p => p.innerText).join(". ");
 
     // --- THE ROYAL BUTLER COMEDY REWRITER ---
-    // Forces ANY stubborn desktop or mobile device voice engine to sound funny 
-    // by swapping the text vocabulary before the engine processes it!
+    // Swaps vocabulary strings before processing to force maximum comedic effect
     fullText = fullText
       .replace(/My Dearest/gi, "Halt! Hear ye, hear ye! Most esteemed, regal, and precious human companion,")
       .replace(/Your eyes/gi, "Behold! Your optical globes... yes, those magnificent eyeballs")
@@ -106,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     utterance = new SpeechSynthesisUtterance(fullText);
     
-    // Aggressive modifier shifts to drag pitch down on systems that support it
+    // Low, dramatic bass modifier overrides
     utterance.rate = 0.80;  
     utterance.pitch = 0.45; 
 
@@ -127,6 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
       isSpeechPlaying = false;
     };
 
+    // Synchronous execution call to bypass modern mobile browser audio blockers
     synth.speak(utterance);
     voiceBtn.innerText = "⏸️";
     voiceBtn.classList.add("playing");
@@ -134,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- 2.5 Voice List Pre-Loader Fix ---
-  // Forces engines to populate internal arrays immediately on browser instantiation
   const primeVoices = () => {
     loadVoices();
   };
