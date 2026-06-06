@@ -26,34 +26,110 @@ document.addEventListener("DOMContentLoaded", () => {
     isMusicPlaying = !isMusicPlaying;
   });
 
-  utterance = new SpeechSynthesisUtterance(fullText);
-    
-    // --- SOOTHING & INTENSE ROMANTIC PACE ---
-    utterance.rate = 0.78;  // Slightly slower (0.78) for a calm, deeply reassuring, and steady reading rhythm
-    utterance.pitch = 0.88; // Lowered pitch to make the voice sound deeper, warmer, and more comforting
+  // --- 2. Cross-Device Manly & Romantic Voice Engine ---
+  const voiceBtn = document.getElementById("voice-btn");
+  const letterTarget = document.getElementById("readable-letter");
+  let synth = window.speechSynthesis;
+  let utterance = null;
+  let isSpeechPlaying = false;
 
-    // --- MALE ACCENT & QUALITY FILTER ---
+  const getBestManlyVoice = () => {
     const voices = synth.getVoices();
     
-    // First priority: Look for premium, natural-sounding MALE English voices
-    const soothingMaleVoice = voices.find(voice => 
-      voice.lang.startsWith('en') && (
-        voice.name.toLowerCase().includes("male") || 
-        voice.name.includes("Google UK English M") || 
-        voice.name.includes("en-us-x-sfg#male") || 
-        voice.name.includes("Siri Male") ||
-        voice.name.includes("wavenet")
-      )
-    );
-    
-    // Elegant fallback: If a specific male tag isn't exposed, grab a British or Australian profile which reads beautifully
-    const elegantFallback = voices.find(voice => voice.lang === 'en-GB' || voice.lang === 'en-AU');
+    // Exact priority keywords for rich, deep male voices across platforms
+    const targetKeywords = [
+      "premium", "natural", "male", "google uk english m", 
+      "en-us-x-sfg#male", "siri male", "microsoft david", "wavenet"
+    ];
 
-    if (soothingMaleVoice) {
-      utterance.voice = soothingMaleVoice;
-    } else if (elegantFallback) {
-      utterance.voice = elegantFallback;
+    let bestVoice = null;
+    let highestScore = -1;
+
+    voices.forEach(voice => {
+      // We only want English profiles
+      if (voice.lang.startsWith("en")) {
+        let score = 0;
+        const voiceNameLower = voice.name.toLowerCase();
+
+        // Score based on romantic/masculine depth keywords
+        targetKeywords.forEach((keyword, index) => {
+          if (voiceNameLower.includes(keyword)) {
+            // Higher keywords in our array get a heavier match weight
+            score += (targetKeywords.length - index);
+          }
+        });
+
+        // Filter out explicitly female identifiers to guarantee a manly profile
+        if (voiceNameLower.includes("female") || voiceNameLower.includes("zira") || voiceNameLower.includes("siri female")) {
+          score = -10;
+        }
+
+        if (score > highestScore) {
+          highestScore = score;
+          bestVoice = voice;
+        }
+      }
+    });
+
+    // Elegant Global Fallback: If no heavy masculine match is found, 
+    // British or Australian system voices offer a highly premium cadence for prose.
+    if (!bestVoice || highestScore <= 0) {
+      bestVoice = voices.find(v => v.lang === 'en-GB' || v.lang === 'en-AU' || v.lang.startsWith('en'));
     }
+
+    return bestVoice;
+  };
+
+  voiceBtn.addEventListener("click", () => {
+    if (isSpeechPlaying) {
+      synth.cancel();
+      voiceBtn.innerText = "🔊";
+      voiceBtn.classList.remove("playing");
+      isSpeechPlaying = false;
+      return;
+    }
+
+    const paragraphs = Array.from(letterTarget.querySelectorAll("h1, p"));
+    const fullText = paragraphs.map(p => p.innerText).join(". ");
+
+    utterance = new SpeechSynthesisUtterance(fullText);
+    
+    // --- ROMANTIC CADENCE CONFIGURATION ---
+    // Forces the device's vocal tract to slow down and compress into a deeper resonance bar
+    utterance.rate = 0.76;  // Intentional, calm, and steady reading rhythm
+    utterance.pitch = 0.85; // Drops the frequency register down for a warmer, deeper chest-vibe tone
+
+    // Fetch and bind the customized voice profile
+    const selectedVoice = getBestManlyVoice();
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+      console.log(`Successfully running romance profile: ${selectedVoice.name}`);
+    }
+
+    utterance.onend = () => {
+      voiceBtn.innerText = "🔊";
+      voiceBtn.classList.remove("playing");
+      isSpeechPlaying = false;
+    };
+
+    utterance.onerror = () => {
+      voiceBtn.innerText = "🔊";
+      voiceBtn.classList.remove("playing");
+      isSpeechPlaying = false;
+    };
+
+    synth.speak(utterance);
+    voiceBtn.innerText = "⏸️";
+    voiceBtn.classList.add("playing");
+    isSpeechPlaying = true;
+  });
+
+  // Critical for Chrome & Android: Voices load asynchronously, so we must trigger the fetcher
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = () => {
+      synth.getVoices();
+    };
+  }
 
   // --- 3. Falling Rose Petals Canvas Effect ---
   const canvas = document.getElementById("petal-canvas");
